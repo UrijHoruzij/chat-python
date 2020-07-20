@@ -1,0 +1,228 @@
+@font-face {
+  font-family: 'LEngineerRegular';
+  src: url("./fonts/LEngineerRegular.eot");
+  src: url("./fonts/LEngineerRegular.eot") format("embedded-opentype"), url("./fonts/LEngineerRegular.woff2") format("woff2"), url("./fonts/LEngineerRegular.woff") format("woff"), url("./fonts/LEngineerRegular.ttf") format("truetype"), url("./fonts/LEngineerRegular.svg#LEngineerRegular") format("svg"); }
+
+@font-face {
+  font-family: 'inglobal';
+  src: url("fonts/inglobal.eot");
+  src: url("fonts/inglobal.eot") format("embedded-opentype"), url("fonts/inglobal.woff2") format("woff2"), url("fonts/inglobal.woff") format("woff"), url("fonts/inglobal.ttf") format("truetype"), url("fonts/inglobal.svg#inglobal") format("svg"); }
+
+@font-face {
+  font-family: 'fontello';
+  src: url("fonts/fontello.eot?80022609");
+  src: url("fonts/fontello.eot?80022609#iefix") format("embedded-opentype"), url("fonts/fontello.woff2?80022609") format("woff2"), url("fonts/fontello.woff?80022609") format("woff"), url("fonts/fontello.ttf?80022609") format("truetype"), url("fonts/fontello.svg?80022609#fontello") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+
+.icon-send:before {
+  content: '\e800'; }
+
+html {
+  font-family: "inglobal";
+  font-size: 16px; }
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; }
+
+.headline {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-family: "LEngineerRegular";
+  font-size: 4rem;
+  font-weight: 600;
+  color: #0BA83B; }
+
+.wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width: 50vw;
+  height: 75vh;
+  border: 2px solid #E7E7E7;
+  border-radius: 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: flex-end; }
+
+.chat {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-line-pack: start;
+  align-content: flex-start;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-bottom: 2px solid #E7E7E7; }
+  .chat-send {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center; }
+    .chat-send__message {
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: #333333;
+      border: none;
+      outline: none;
+      background-color: #E7E7E7;
+      border-radius: 16px;
+      width: 70%;
+      height: 32px;
+      padding: 4px;
+      margin-left: 16px;
+      margin-right: 16px; }
+    .chat-send__submit {
+      font-family: "fontello";
+      font-weight: 500;
+      font-size: 1.125rem;
+      color: #E7E7E7;
+      border: none;
+      outline: none;
+      width: 32px;
+      height: 32px;
+      background-color: #0BA83B;
+      border-radius: 16px;
+      height: 32px;
+      -webkit-transition: all .3s;
+      transition: all .3s; }
+      .chat-send__submit:hover {
+        background-color: #098e31; }
+
+.message {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  background-color: #E7E7E7;
+  padding: 16px;
+  margin: 8px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  font-family: 1rem;
+  color: #333333; }
+  .message-block {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex; }
+    .message-block--send-message {
+      -webkit-box-pack: end;
+      -ms-flex-pack: end;
+      justify-content: flex-end; }
+  .message--send-message {
+    color: #ffffff;
+    background-color: #0BA83B;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 16px; }
+  .message__name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px; }
+  .message__text {
+    font-size: 1rem;
+    font-weight: 500; }
+
+.modal {
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column; }
+  .modal__login {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #333333;
+    border: none;
+    outline: none;
+    background-color: #E7E7E7;
+    border-radius: 16px;
+    width: 20%;
+    height: 32px;
+    padding: 4px;
+    margin-top: 16px;
+    margin-bottom: 16px; }
+  .modal__password {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #333333;
+    border: none;
+    outline: none;
+    background-color: #E7E7E7;
+    border-radius: 16px;
+    width: 20%;
+    height: 32px;
+    padding: 4px;
+    margin-bottom: 16px; }
+  .modal__submit {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #ffffff;
+    border: none;
+    outline: none;
+    background-color: #0BA83B;
+    width: 20%;
+    height: 32px;
+    border-radius: 16px;
+    -webkit-transition: all .3s;
+    transition: all .3s; }
+    .modal__submit:hover {
+      background-color: #098e31; }

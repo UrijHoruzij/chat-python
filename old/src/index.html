@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Чат</title>
+	<link rel="stylesheet" href="css/style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+  <div id="modal" class="modal">
+    <div class="headline">Чат</div>
+    <input class="modal__login" id="login" type="text" placeholder="Логин">
+    <input class="modal__password" id="password" type="text" placeholder="Пароль">
+    <button class="modal__submit" onclick="auth()">Войти</button>
+  </div>
+  <div class="headline">Чат</div>
+	<div class="wrapper">
+		<div id="chat" class="chat">     
+		</div>
+		<div class="chat-send">
+			<input class="chat-send__message" id="message" type="text" placeholder="Сообщение">
+			<button class="chat-send__submit" onclick="sendMessage()"><span class="icon-send"></span></button>
+		</div>
+	</div>
+<script>
+var serverUrl = "http://localhost:8080";
+var lastMessageId = "";
+var chat = document.getElementById("chat");
+var message = document.getElementById("message");
+var login = document.getElementById("login");
+var password = document.getElementById("password");
+var token="";
+var id="";
+message.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+});
+function auth() {
+	if(login.value!="" && password.value!=""){
+	    var requestJSON = {"command" : "Auth", "login": login.value, "password" : password.value}
+	    $.ajax({
+			type : "POST",
+			url : serverUrl,
+			data : JSON.stringify(requestJSON),
+			contentType : "application/json",
+			dataType : "json",
+			success: function (data) {
+				token = data["token"];
+        id=data["id-user"];
+				login.value = "";
+				password.value = "";
+				document.getElementById("modal").style.display = "none";
+				console.log(token);
+            }
+		});
+	}
+}
+function sendMessage()
+{
+  if(message.value!="" && token!=""){
+    var requestJSON = {"command" : "Send", "message": message.value, "token": token, "id-user": id}
+    $.ajax({
+        type : "POST",
+        url : serverUrl,
+        data : JSON.stringify(requestJSON),
+        contentType : "application/json",
+        dataType : "json"
+    });
+    message.value="";
+  }
+}
+function getMessage()
+{
+  if(id!="" && token!=""){
+    var requestJSON = {"command" : "Get", "id" : lastMessageId}
+    $.ajax({
+        type : "POST",
+        url : serverUrl,
+        data : JSON.stringify(requestJSON),
+        success : function(data)
+        {
+           lastMessageId = data["id"];
+           for (var i = 0; i < data["messages"].length; i++)
+           {
+              messages = JSON.parse(data["messages"][i]);
+              var messageBlock = document.createElement('div');
+              var div = document.createElement('div');
+              var nameMessage = document.createElement('span');
+              var text = document.createElement('span');
+              if(messages["id-user"]===id){
+                messageBlock.className = "message-block message-block--send-message";
+                div.className = "message message--send-message";
+                nameMessage.className = "message__name";
+                text.className = "message__text";
+                nameMessage.innerText = messages["nick"];
+                text.innerText = messages["text"];
+                chat.append(messageBlock);
+                messageBlock.append(div);
+                div.append(nameMessage);
+                div.append(text);
+                chat.scrollTop = chat.scrollHeight;
+              }else{
+                messageBlock.className = "message-block";
+                div.className = "message";
+                nameMessage.className = "message__name";
+                text.className = "message__text";
+                nameMessage.innerText = messages["nick"];
+                text.innerText = messages["text"];
+                chat.append(messageBlock);
+                messageBlock.append(div);
+                div.append(nameMessage);
+                div.append(text);
+                chat.scrollTop = chat.scrollHeight;
+              }
+           }
+        },
+        contentType : "application/json",
+        dataType : "json"
+    });
+  }
+}
+getMessage();
+setInterval(getMessage, 1000);
+</script>
+</body>
+</html>

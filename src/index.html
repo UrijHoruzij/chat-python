@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Чат</title>
+	<link rel="stylesheet" href="css/style.css">
+  <script src="js/jquery-3.2.1.min.js"></script>
+  <script src="js/sha256.js"></script>
+</head>
+<body>
+  <div id="modal" class="modal">
+    <div class="headline">Чат</div>
+    <input class="modal__login" id="nameUser" type="text" placeholder="Имя">
+    <input class="modal__password" id="login" type="text" placeholder="Логин">
+    <input class="modal__password" id="password" type="text" placeholder="Пароль">
+    <button class="modal__submit" onclick="auth()">Войти</button>
+    <button class="modal__submit" onclick="registration()">Зарегистрироваться</button>
+  </div>
+  <div class="headline">Чат</div>
+	<div class="wrapper">
+		<div id="chat" class="chat">    
+    </div>
+    <div class="preview">
+      <div class="image-preview">
+        <div id="delete" class="delete">
+          <span class="icon-cancel"></span>
+        </div>
+        <img id="image" src="" class="chat-image-preview">
+      </div>
+      <div class="chat-send">
+        <input class="chat-send__message" id="message" type="text" placeholder="Сообщение">
+        <label for="file-upload" class="chat-image-upload">
+          <span class='icon-picture'></span>
+        </label>
+        <input type="file" accept="image/jpeg,image/png,image/gif" id="file-upload" name="upload" class="chat-image" onchange="encodeImageFileAsURL(this)">
+        <button class="chat-send__submit" onclick="sendMessage()"><span class="icon-send"></span></button>
+      </div>
+    </div>
+	</div>
+<script>
+var serverUrl = "http://localhost:8080";
+var lastMessageId = "";
+var chat = document.getElementById("chat");
+var message = document.getElementById("message");
+var nameUser = document.getElementById('nameUser');
+var login = document.getElementById("login");
+var password = document.getElementById("password");
+var deleteButton  = document.getElementById('delete');
+var preview = document.getElementById('image');
+var authFlag = false;
+var token="";
+var id="";
+var image = "";
+message.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+});
+deleteButton.addEventListener('click', function(e){
+  deleteImage();
+})
+function auth() {
+	if(login.value!="" && password.value!=""){
+	    var requestJSON = {"command" : "Auth", "login": login.value, "password" : SHA256(password.value)}
+	    $.ajax({
+			type : "POST",
+			url : serverUrl,
+			data : JSON.stringify(requestJSON),
+			contentType : "application/json",
+			dataType : "json",
+			success: function (data) {
+				token = data["token"];
+        id=data["id-user"];
+				login.value = "";
+        password.value = "";
+        nameUser.value = "";
+        document.getElementById("modal").style.display = "none";
+        authFlag = true;
+				console.log(token);
+      }
+		});
+	}
+}
+function registration(){
+  if(login.value!="" && password.value!="" && nameUser.value!=""){
+	    var requestJSON = {"command" : "Registration", "login": login.value, "password" : password.value, "nameUser": nameUser.value}
+	    $.ajax({
+			type : "POST",
+			url : serverUrl,
+			data : JSON.stringify(requestJSON),
+			contentType : "application/json",
+			dataType : "json",
+			success: function (data) {
+				token = data["token"];
+        id=data["id-user"];
+				login.value = "";
+        password.value = "";
+        nameUser.value = "";
+        document.getElementById("modal").style.display = "none";
+        authFlag = true;
+				console.log(token);
+      }
+		});
+	}
+}
+function sendMessage()
+{
+  if(message.value!="" && token!=""){
+    var requestJSON = {"command" : "Send", "message": message.value, "token": token, "id-user": id, "image": image}
+    $.ajax({
+        type : "POST",
+        url : serverUrl,
+        data : JSON.stringify(requestJSON),
+        contentType : "application/json",
+        dataType : "json"
+    });
+    message.value="";
+    image = "";
+    preview.src = "";
+    preview.style.display = "none";
+    deleteButton.style.display = "none";
+  }
+}
+function getMessage()
+{
+  if(id!="" && token!="" && authFlag){
+    var requestJSON = {"command" : "Get", "id" : lastMessageId}
+    $.ajax({
+        type : "POST",
+        url : serverUrl,
+        data : JSON.stringify(requestJSON),
+        success : function(data)
+        {
+           lastMessageId = data["id"];
+           for (var i = 0; i < data["messages"].length; i++)
+           {
+              messages = JSON.parse(data["messages"][i]);
+              var messageBlock = document.createElement('div');
+              var div = document.createElement('div');
+              var nameMessage = document.createElement('span');
+              var text = document.createElement('span');
+              var image = document.createElement('img');
+              if(messages["id-user"]===id){
+                messageBlock.className = "message-block message-block--send-message";
+                div.className = "message message--send-message";
+                nameMessage.className = "message__name";
+                text.className = "message__text";
+                nameMessage.innerText = messages["nick"];
+                text.innerText = messages["text"];
+                image.src = messages["image"];
+                image.className = "image";
+                chat.append(messageBlock);
+                messageBlock.append(div);
+                div.append(nameMessage);
+                div.append(text);
+                if(messages["image"]){
+                  div.append(image);
+                }
+                chat.scrollTop = chat.scrollHeight;
+              }else{
+                messageBlock.className = "message-block";
+                div.className = "message";
+                nameMessage.className = "message__name";
+                text.className = "message__text";
+                nameMessage.innerText = messages["nick"];
+                text.innerText = messages["text"];
+                image.src = messages["image"];
+                image.className = "image";
+                chat.append(messageBlock);
+                messageBlock.append(div);
+                div.append(nameMessage);
+                div.append(text);
+                if(messages["image"]){
+                  div.append(image);
+                }
+                chat.scrollTop = chat.scrollHeight;
+              }
+           }
+        },
+        contentType : "application/json",
+        dataType : "json"
+    });
+  }
+}
+function encodeImageFileAsURL(element) {
+    var file = element.files[0];
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      image = "";
+      image = reader.result;
+      deleteButton.style.display = "flex";
+      preview.style.display = "block";
+      preview.src = image;
+    }
+    reader.readAsDataURL(file);
+}
+function deleteImage(){
+  image = "";
+  deleteButton.style.display = "none";
+  preview.src = "";
+  preview.style.display = "none";
+}
+setInterval(getMessage, 1000);
+</script>
+</body>
+</html>
